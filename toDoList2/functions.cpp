@@ -1,5 +1,6 @@
 #include "functions.h"
 #include <iostream>
+#include <fstream>
 
 
 bool operator >(Task task1, Task task2)
@@ -64,6 +65,7 @@ void main_menu(Task* task)
 		case 8:
 			find_by_date_and_time(task, current_position);
 		case 0:
+			save_to_file(task, current_position);
 			break;
 		}
 	} while (choise != 0);
@@ -101,6 +103,8 @@ void show_all(Task* task, int size) // need show for month and week
 	std::cout << "For show tasks for a day press 2\n";
 	std::cout << "For show task for a week press 3\n";
 	std::cout << "For show tasks for a month press 4\n";
+	std::cout << "For show all task with priority press 5\n";
+
 	std::cin >> user_choise;
 	switch (user_choise) 
 	{
@@ -157,6 +161,9 @@ void show_all(Task* task, int size) // need show for month and week
 		break;
 	case 4:
 		//here show for a month
+		break;
+	case 5:
+		show_with_priority(task, size);
 		break;
 	}
 	
@@ -317,4 +324,70 @@ void find_by_date_and_time(Task* task, int size)
 
 void save_to_file(Task* task, int size)
 {
+	std::ofstream file_for_write("todolist.txt");
+	if (file_for_write.is_open())
+	{
+		file_for_write << size << std::endl;
+		for (int i = 0; i < size; i++)
+		{
+			file_for_write << task[i].name << std::endl;
+			file_for_write << task[i].priority << std::endl;
+			file_for_write << task[i].discription << std::endl;
+			file_for_write << task[i].date.day << std::endl;
+			file_for_write << task[i].date.month << std::endl;
+			file_for_write << task[i].date.year << std::endl;
+			file_for_write << task[i].date.hour << std::endl;
+			file_for_write << task[i].date.minutes << std::endl;
+		}
+		std::cout << "To-do list is saved to the file 'todolist.txt'";
+		file_for_write.close();
+	}
+	else {
+		std::cout << "Cant save data!\n";
+	}
+}
+
+void show_with_priority(Task* task, int size)
+{
+	std::cout << "TASKs with priotiry == 3:\n";
+		for (int i = 0; i < size; i++)
+		{
+			if (task[i].priority == 3)
+			{
+				std::cout << "Name of the task: " << task[i].name << std::endl;
+				std::cout << "Date:" << task[i].date.day << "." << task[i].date.month << "." << task[i].date.year << " " << task[i].date.hour << ":" << task[i].date.minutes << std::endl;
+				std::cout << "Discription: " << task[i].discription << std::endl;
+				std::cout << "Priority: " << task[i].priority << std::endl;
+				std::cout << std::endl;
+				std::cout << std::endl;
+			}
+		}
+		std::cout << "TASKs with priotiry == 2:\n";
+		for (int i = 0; i < size; i++)
+		{
+			if (task[i].priority == 2)
+			{
+				std::cout << "Name of the task: " << task[i].name << std::endl;
+				std::cout << "Date:" << task[i].date.day << "." << task[i].date.month << "." << task[i].date.year << " " << task[i].date.hour << ":" << task[i].date.minutes << std::endl;
+				std::cout << "Discription: " << task[i].discription << std::endl;
+				std::cout << "Priority: " << task[i].priority << std::endl;
+				std::cout << std::endl;
+				std::cout << std::endl;
+			}
+		}
+		
+
+		std::cout << "TASKs with priotiry == 1:\n";
+		for (int i = 0; i < size; i++)
+		{
+			if (task[i].priority == 1)
+			{
+				std::cout << "Name of the task: " << task[i].name << std::endl;
+				std::cout << "Date:" << task[i].date.day << "." << task[i].date.month << "." << task[i].date.year << " " << task[i].date.hour << ":" << task[i].date.minutes << std::endl;
+				std::cout << "Discription: " << task[i].discription << std::endl;
+				std::cout << "Priority: " << task[i].priority << std::endl;
+				std::cout << std::endl;
+				std::cout << std::endl;
+			}
+		}
 }
