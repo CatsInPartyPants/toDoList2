@@ -7,9 +7,9 @@ bool operator >(Task task1, Task task2)
 {
 	if (task1.date.year > task2.date.year)
 		return true;
-	else if (task1.date.month > task2.date.month)
+	else if (task1.date.year == task2.date.year && task1.date.month > task2.date.month)
 		return true;
-	else if (task1.date.day > task2.date.day)
+	else if ((task1.date.year == task2.date.year && task1.date.month == task2.date.month) && task1.date.day > task2.date.day)
 		return true;
 	return false;
 }
@@ -104,6 +104,7 @@ void show_all(Task* task, int size) // need show for month and week
 	std::cout << "For show task for a week press 3\n";
 	std::cout << "For show tasks for a month press 4\n";
 	std::cout << "For show all task with priority press 5\n";
+	std::cout << "For show all task sorted by date press 6\n";
 
 	std::cin >> user_choise;
 	switch (user_choise) 
@@ -157,13 +158,114 @@ void show_all(Task* task, int size) // need show for month and week
 		}
 		break;
 	case 3:
+	{
 		//here show for a week
+		int tmp_day, tmp_month, tmp_year;
+		std::tm tm{};
+		std::cout << "Tasks for week since:\n";
+		std::cout << "Day:";
+		std::cin >> tmp_day;
+		std::cout << "Month:";
+		std::cin >> tmp_month;
+		std::cout << "Year:";
+		std::cin >> tmp_year;
+		tm.tm_year = tmp_year - 1900;
+		tm.tm_mon = tmp_month - 1;
+		tm.tm_mday = tmp_day;
+		tm.tm_hour = 0;
+		tm.tm_min = 0;
+		tm.tm_isdst = 0;
+		std::time_t first_date_seconds = std::mktime(&tm); // seconds from 1900 to entered by user date
+
+		for (int i = 0; i < size; i++)
+		{
+			std::tm tmp_tm{};
+			tmp_tm.tm_year = task[i].date.year - 1900;
+			tmp_tm.tm_mon = task[i].date.month - 1;
+			tmp_tm.tm_mday = task[i].date.day;
+			tmp_tm.tm_hour = task[i].date.hour;
+			tmp_tm.tm_min = task[i].date.minutes;
+			tmp_tm.tm_isdst = 0;
+			std::time_t tmp_seconds = std::mktime(&tmp_tm); // seconds from 1900 to entered by user date
+
+			if (tmp_seconds - first_date_seconds >= 0 && tmp_seconds - first_date_seconds <= SECONDS_IN_WEEK)
+			{
+				std::cout << "Name of the task: " << task[i].name << std::endl;
+				std::cout << "Date:" << task[i].date.day << "." << task[i].date.month << "." << task[i].date.year << " " << task[i].date.hour << ":" << task[i].date.minutes << std::endl;
+				std::cout << "Discription: " << task[i].discription << std::endl;
+				std::cout << "Priority: " << task[i].priority << std::endl;
+				std::cout << std::endl;
+				std::cout << std::endl;
+			}
+		}
 		break;
+	}
 	case 4:
+	{
 		//here show for a month
+		int tmp_day, tmp_month, tmp_year;
+		std::tm tm{};
+		std::cout << "Tasks for month since:\n";
+		std::cout << "Day:";
+		std::cin >> tmp_day;
+		std::cout << "Month:";
+		std::cin >> tmp_month;
+		std::cout << "Year:";
+		std::cin >> tmp_year;
+		tm.tm_year = tmp_year - 1900;
+		tm.tm_mon = tmp_month - 1;
+		tm.tm_mday = tmp_day;
+		tm.tm_hour = 0;
+		tm.tm_min = 0;
+		tm.tm_isdst = 0;
+		std::time_t first_date_seconds = std::mktime(&tm); // seconds from 1900 to entered by user date
+
+		for (int i = 0; i < size; i++)
+		{
+			std::tm tmp_tm{};
+			tmp_tm.tm_year = task[i].date.year - 1900;
+			tmp_tm.tm_mon = task[i].date.month - 1;
+			tmp_tm.tm_mday = task[i].date.day;
+			tmp_tm.tm_hour = task[i].date.hour;
+			tmp_tm.tm_min = task[i].date.minutes;
+			tmp_tm.tm_isdst = 0;
+			std::time_t tmp_seconds = std::mktime(&tmp_tm); // seconds from 1900 to entered by user date
+
+			if (tmp_seconds - first_date_seconds >= 0 && tmp_seconds - first_date_seconds <= SECONDS_IN_MONTH)
+			{
+				std::cout << "Name of the task: " << task[i].name << std::endl;
+				std::cout << "Date:" << task[i].date.day << "." << task[i].date.month << "." << task[i].date.year << " " << task[i].date.hour << ":" << task[i].date.minutes << std::endl;
+				std::cout << "Discription: " << task[i].discription << std::endl;
+				std::cout << "Priority: " << task[i].priority << std::endl;
+				std::cout << std::endl;
+				std::cout << std::endl;
+			}
+		}
 		break;
+	}
 	case 5:
 		show_with_priority(task, size);
+		break;
+	case 6:
+		//making copy of array of Tasks
+		Task * tmpdate = new Task[100];
+		for (int i = 0; i < 100; i++)
+		{
+			tmpdate[i] = task[i];
+		}
+		sort_by_date(tmpdate, size);
+		for (int i = 0; i < size; i++)
+		{
+			std::cout << std::endl;
+			std::cout << i + 1 << ". ";
+			std::cout << "Name of the task: " << tmpdate[i].name << std::endl;
+			std::cout << "Date:" << tmpdate[i].date.day << "." << tmpdate[i].date.month << "." << tmpdate[i].date.year << " " << tmpdate[i].date.hour << ":" << tmpdate[i].date.minutes << std::endl;
+			std::cout << "Discription: " << tmpdate[i].discription << std::endl;
+			std::cout << "Priority: " << tmpdate[i].priority << std::endl;
+			std::cout << std::endl;
+			std::cout << std::endl;
+		}
+		delete[]tmpdate;
 		break;
 	}
 	
@@ -349,7 +451,7 @@ void save_to_file(Task* task, int size)
 
 void show_with_priority(Task* task, int size)
 {
-	std::cout << "TASKs with priotiry == 3:\n";
+	std::cout << "TASKs with priority == 3:\n";
 		for (int i = 0; i < size; i++)
 		{
 			if (task[i].priority == 3)
@@ -362,7 +464,7 @@ void show_with_priority(Task* task, int size)
 				std::cout << std::endl;
 			}
 		}
-		std::cout << "TASKs with priotiry == 2:\n";
+		std::cout << "TASKs with priority == 2:\n";
 		for (int i = 0; i < size; i++)
 		{
 			if (task[i].priority == 2)
@@ -377,7 +479,7 @@ void show_with_priority(Task* task, int size)
 		}
 		
 
-		std::cout << "TASKs with priotiry == 1:\n";
+		std::cout << "TASKs with priority == 1:\n";
 		for (int i = 0; i < size; i++)
 		{
 			if (task[i].priority == 1)
@@ -390,4 +492,21 @@ void show_with_priority(Task* task, int size)
 				std::cout << std::endl;
 			}
 		}
+}
+
+void sort_by_date(Task* task, int size)
+{
+	Task tmp;
+	for (int i = 0; i < size; ++i)
+	{
+		for (int r = 0; r < size - 1; r++)
+		{
+			if (task[r] > task[r + 1])
+			{
+				tmp = task[r];
+				task[r] = task[r + 1];
+				task[r + 1] = tmp;
+			}
+		}
+	}
 }

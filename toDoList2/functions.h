@@ -2,6 +2,9 @@
 #define _TODOLIST_H_
 #include <string>
 
+#define SECONDS_IN_WEEK 604800
+#define SECONDS_IN_MONTH 2419200
+
 struct Task {
 	std::string name;
 	int priority;
@@ -30,9 +33,8 @@ void find_by_date_and_time(Task* task, int size);
 bool operator >(Task, Task);
 void sort_by_date(Task* task, int size);// not ready
 
+void show_with_priority(Task* task, int size);
 void save_to_file(Task* task, int size);
 
-
-void show_with_priority(Tast* task, int size);
 
 #endif
